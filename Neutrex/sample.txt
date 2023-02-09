@@ -1,0 +1,20 @@
+Input: # 11 ( PLMN not allowed ) ; or # 35 ( Requested service option not authorized in this PLMN ) ;
+Output: <control> <condition> # 11 ( PLMN not allowed ) ; or # 35 ( Requested service option not authorized in this PLMN ) ; </condition> </control>
+
+Input: The UE shall set the EPS update status to EU3 ROAMING NOT ALLOWED ( and shall store it according to subclause 5.1.3.3 ) and shall delete any GUTI , last visited registered TAI , TAI list and eKSI . Additionally , the UE shall delete the list of equivalent PLMNs and reset the attach attempt counter . 
+Output: <control> <action> The UE shall set the EPS update status to EU3 ROAMING NOT ALLOWED ( and shall store it according to subclause 5.1.3.3 ) </action> and <action> shall delete any GUTI , last visited registered TAI , TAI list and eKSI . </action> <action> Additionally , the UE shall delete the list of equivalent PLMNs </action> and <action> reset the attach attempt counter . </action> </control>
+				
+Input: If the tracking area updating can not be accepted by the network , the MME sends a TRACKING AREA UPDATE REJECT message to the UE including an appropriate EMM cause value .
+Output: <control> <condition> If the tracking area updating can not be accepted by the network , </condition> <action> the MME sends a TRACKING AREA UPDATE REJECT message to the UE including an appropriate EMM cause value . </action> </control>
+
+Input: If the UE receives a GUTI REALLOCATION COMMAND message before the tracking area updating procedure has been completed , this message shall be ignored and the tracking area updating procedure shall be progressed . 
+Output: <control> <condition> <condition> If the UE receives a GUTI REALLOCATION COMMAND message </condition> <condition> before the tracking area updating procedure has been completed , </condition> </condition> <action> this message shall be ignored </action> and <action> the tracking area updating procedure shall be progressed . </action> </control>
+
+Input: Upon expiry of timer T3413 , the network may reinitiate paging . 
+Output: <control> <condition> Upon expiry of timer T3413 , </condition> <action> the network may reinitiate paging . </action> </control>			
+
+Input: Upon expiry of timer T3415 , the network shall abort the paging procedure .
+Output: <control> <condition> Upon expiry of timer T3415 , </condition> <action> the network shall abort the paging procedure . </action> </control>
+
+
+				

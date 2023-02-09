@@ -1,0 +1,141 @@
+Input:
+<control> <condition> # 11 ( PLMN not allowed ) ; or # 35 ( Requested service option not authorized in this PLMN ) ; </condition> </control>
+<control> <action> The UE shall set the EPS update status to EU3 ROAMING NOT ALLOWED ( and shall store it according to subclause 5.1.3.3 ) </action> and <action> shall delete any GUTI , last visited registered TAI , TAI list and eKSI . </action> <action> Additionally , the UE shall delete the list of equivalent PLMNs </action> and <action> reset the attach attempt counter . </action> </control>
+Output:
+				<transition label="T1">
+					<start>  </start>
+					<end>  </end>
+					<condition> (chan_MU = chanMU_detach_req) &amp; (detach_req_error_cause = cause_35) | (chan_MU = chanMU_detach_req) &amp; (detach_req_error_cause = cause_11) </condition>
+					<actions>
+						<action label="eps_update_status_value = eu3_roaming_not_allowed">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+						<action label="attach_attempt_counter_value = zero">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+						<action label="eksi_valid = FALSE">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+						<action label="tai_list_valid = FALSE">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+						<action label="last_visited_registered_tai_valid = FALSE">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+						<action label="guti_valid = FALSE">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+						<action label="equivalent_plmns_valid = FALSE">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+					</actions>
+				</transition>
+
+
+Input:
+<control> <condition> If the tracking area updating can not be accepted by the network , </condition> <action> the MME sends a TRACKING AREA UPDATE REJECT message to the UE including an appropriate EMM cause value . </action> </control>
+Output:
+				<transition label="T2">
+					<start>  </start>
+					<end>  </end>
+					<condition> !accept_procedure_tau &amp; (procedure_tau_state = RUNNING) </condition>
+					<actions>
+						<action label="tau_reject_emm_cause_present = TRUE">
+							<channel label="internal">
+								<start>MME</start>
+								<end>UE</end>
+							</channel>
+						</action>
+						<action label="tau_reject">
+							<channel label="chan_MU">
+								<start>MME</start>
+								<end>UE</end>
+							</channel>
+						</action>
+					</actions>
+				</transition>
+
+
+
+Input:
+<control> <condition> <condition> If the UE receives a GUTI REALLOCATION COMMAND message </condition> <condition> before the tracking area updating procedure has been completed , </condition> </condition> <action> this message shall be ignored </action> and <action> the tracking area updating procedure shall be progressed . </action> </control>
+Output:
+				<transition label="T3">
+					<start>  </start>
+					<end>  </end>
+					<condition> ((chan_MU = chanMU_guti_realloc_command) &amp; !(procedure_tau_state = COMPLETED) &amp; procedure_tau_state = RUNNING) </condition>
+					<actions>
+						<action label="accept_message_guti_realloc_command = FALSE">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+						<action label="procedure_tau_state = RUNNING">
+							<channel label="internal">
+								<start>UE</start>
+								<end>MME</end>
+							</channel>
+						</action>
+					</actions>
+				</transition>
+
+
+Input:
+<control> <condition> Upon expiry of timer T3413 , </condition> <action> the network may reinitiate paging . </action> </control>
+Output:
+				<transition label="T4">
+					<start>  </start>
+					<end>  </end>
+					<condition> ((timer_t3413_started &amp; timer_t3413_expired)) &amp; coin_toss_49 &amp; paging_proc_required </condition>
+					<actions>
+						<action label="initiate_paging_proc = TRUE">
+							<channel label="internal">
+								<start>MME</start>
+								<end>UE</end>
+							</channel>
+						</action>
+					</actions>
+				</transition>
+
+
+Input:
+<control> <condition> Upon expiry of timer T3415 , </condition> <action> the network shall abort the paging procedure </action> </control>
+Output:
+				<transition label="T5">
+					<start>  </start>
+					<end>  </end>
+					<condition> (timer_t3415_started &amp; timer_t3415_expired) </condition>
+					<actions>
+						<action label="procedure_paging_proc_state = STOPPED">
+							<channel label="internal">
+								<start>MME</start>
+								<end>UE</end>
+							</channel>
+						</action>
+					</actions>
+				</transition>
+
+
+				
